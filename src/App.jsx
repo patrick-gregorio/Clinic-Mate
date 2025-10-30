@@ -1,9 +1,21 @@
+import { BrowserRouter, Route, Routes } from "react-router";
+import NavigationBar from "./components/patientComponents/NavigationBar/NavigationBar";
+import Home from "./pages/Home/Home";
+import Booking from "./pages/Booking/Booking";
+import AboutUs from "./pages/AboutUs/AboutUs";
+
 function App() {
   return (
   <>
-  <div className="flex justify-center items-end h-screen">
-   <h1 className="text-[100px] font-extrabold ">Hello Tailwind</h1>
-   </div>
+  <BrowserRouter>
+  <NavigationBar/>
+    <Routes>
+      <Route path="/" element={<Home/>}/>
+      <Route path="/Booking" element={<Booking/>}/>
+      <Route path="/AboutUs" element={<AboutUs/>}/>
+    </Routes>
+  </BrowserRouter>
+  
   </>
 );
 }
