@@ -10,10 +10,10 @@ import AuthModal from "../LogIn/AuthModal";
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
-  const [hasNoMiddle, setHasNoMiddle] = useState(false);
+
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
-  const [othersValue, setOthersValue] = useState("");
+
   const [birthday, setBirthday] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
@@ -24,8 +24,39 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [realTimePassword, setRealTimePassword] = useState("");
   async function RegisterUser() {
+    const err = document.getElementById("errPassword");
+    err.innerHTML = "";
+
+    const tempValue = (password || "").trim();
+
+    if (!tempValue) {
+      err.innerHTML = "Password is required";
+      return;
+    }
+
+    if (tempValue.length < 8) {
+      err.innerHTML = "Must be at least 8 characters long";
+      return;
+    }
+    if (!/[A-Z]/.test(tempValue)) {
+      err.innerHTML = "Must contain an uppercase letter";
+      return;
+    }
+    if (!/[a-z]/.test(tempValue)) {
+      err.innerHTML = "Must contain at least one lowercase letter";
+      return;
+    }
+    if (!/[0-9]/.test(tempValue)) {
+      err.innerHTML = "Password Must contain a number";
+      return;
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(tempValue)) {
+      err.innerHTML = "must contain at least one special character";
+      return;
+    }
+
     setIsLoading(true);
     setTimeout(async () => {
       try {
@@ -38,7 +69,7 @@ export default function SignUp() {
         const userData = {
           fullName: {
             firstName: firstName,
-            middleName: hasNoMiddle ? "N/A" : middleName,
+            middleName: "",
             lastName: lastName,
           },
           gender: gender,
@@ -73,52 +104,52 @@ export default function SignUp() {
   }
 
   function validateFirstName(e) {
-    const value = e.target.value.trim();
+    const value = e.target.value;
+    const tempValue = value.trim();
     const err = document.getElementById("errFirstName");
     err.innerHTML = "";
     setFirstName(null);
-    if (!value) err.innerHTML = "First Name is required";
-    else if (value.length < 3)
+    if (!tempValue) err.innerHTML = "First Name is required";
+    else if (tempValue.length < 3)
       err.innerHTML = "Must be at least 3 characters long";
     else setFirstName(value);
   }
   function validateMiddleName(e) {
-    const value = e.target.value.trim();
-    const err = document.getElementById("errMiddleName");
-    err.innerHTML = "";
-    setMiddleName(null);
-    if (hasNoMiddle) {
-      setMiddleName("N/A");
+    const value = e.target.value;
+
+    const tempValue = value.trim();
+
+    if (!tempValue) {
+      setMiddleName("");
       return;
     }
-    if (!value) err.innerHTML = "Middle Name is required";
-    else if (value.length < 2)
-      err.innerHTML = "Must be at least 2 characters long";
-    else setMiddleName(value);
+    setMiddleName(value);
   }
   function validateLastName(e) {
-    const value = e.target.value.trim();
+    const value = e.target.value;
+    const tempValue = value.trim();
     const err = document.getElementById("errLastName");
     err.innerHTML = "";
     setLastName(null);
-    if (!value) err.innerHTML = "Last Name is required";
-    else if (value.length < 2)
+    if (!tempValue) err.innerHTML = "Last Name is required";
+    else if (tempValue.length < 2)
       err.innerHTML = "Must be at least 2 characters long";
     else setLastName(value);
   }
+
   function validateGender(e) {
     const value = e.target.value;
     const err = document.getElementById("errGender");
     err.innerHTML = "";
-    setGender(null);
 
-    if (!value) err.innerHTML = "Please select a gender";
-    else if (value === "others") setGender("others");
-    else {
+    if (!value) {
+      setGender(null);
+      err.innerHTML = "Please select a gender";
+    } else {
       setGender(value);
-      setOthersValue("");
     }
   }
+
   function validateBirthday(e) {
     const value = e.target.value;
     const err = document.getElementById("errBirthday");
@@ -145,66 +176,65 @@ export default function SignUp() {
     }
   }
   function validateContact(e) {
-    const value = e.target.value.trim();
+    const value = e.target.value;
+    console.log(contact);
+    const tempValue = value.trim();
     const err = document.getElementById("errContact");
     err.innerHTML = "";
     setContact(null);
-    if (!value) err.innerHTML = "Contact Number is required";
-    else if (!/^09\d{9}$/.test(value))
+    if (!tempValue) err.innerHTML = "Contact Number is required";
+    else if (!/^09\d{9}$/.test(tempValue))
       err.innerHTML = "enter a valid 11-digit phone number (09XXXXXXXXX)";
     else setContact(value);
   }
   function validateEmail(e) {
-    const value = e.target.value.trim();
+    const value = e.target.value;
+    const tempValue = value.trim();
     const err = document.getElementById("errEmail");
     err.innerHTML = "";
     setEmail(null);
-    if (!value) err.innerHTML = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+    if (!tempValue) err.innerHTML = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempValue))
       err.innerHTML = "enter a valid email address";
     else setEmail(value);
   }
   function validatePassword(e) {
-    const value = e.target.value.trim();
+    const value = e.target.value;
+    console.log(password);
+    const tempValue = value.trim();
     const err = document.getElementById("errPassword");
     err.innerHTML = "";
-    setPassword(null);
-    if (!value) err.innerHTML = "Password is required";
-    else if (value.length < 8)
-      err.innerHTML = "Must be at least 8 characters long";
-    else if (!/[A-Z]/.test(value))
-      err.innerHTML = "Must contain an uppercase letter";
-    else if (!/[a-z]/.test(value))
-      err.innerHTML = "Must contain at least one lowercase letter";
-    else if (!/[0-9]/.test(value))
-      err.innerHTML = "Password Must contain a number";
-    else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value))
-      err.innerHTML = "must contain at least one special character";
-    else setPassword(value);
-  }
-  function validateConfirm(e) {
-    const value = e.target.value.trim();
-    const err = document.getElementById("errConfirm");
-    err.innerHTML = "";
-    setConfirm(null);
-    if (!value) err.innerHTML = "Please confirm your password";
-    else if (value !== password) err.innerHTML = "Passwords do not match";
-    else setConfirm(value);
-  }
-  function handleNoMiddleChange(e) {
-    const isChecked = e.target.checked;
-    setHasNoMiddle(isChecked);
-    const middleInput = document.querySelector('input[name="middleName"]');
-    const err = document.getElementById("errMiddleName");
-    if (isChecked) {
-      middleInput.disabled = true;
-      err.innerHTML = "";
-      setMiddleName("N/A");
-    } else {
-      middleInput.disabled = false;
-      setMiddleName("");
+
+    setPassword(value);
+    setRealTimePassword(value);
+
+    if (!tempValue) {
+      err.innerHTML = "Password is required";
+    }
+    const confirmErr = document.getElementById("errConfirm");
+    const confirmInput = document.querySelector(
+      'input[name="confirmpassword"]'
+    );
+
+    if (confirmErr && confirmInput) {
+      if (confirmInput.value === value) {
+        confirmErr.innerHTML = "";
+      }
     }
   }
+  function validateConfirm(e) {
+    const value = e.target.value;
+    console.log(confirm);
+    const tempValue = value.trim();
+    const err = document.getElementById("errConfirm");
+    err.innerHTML = "";
+    setConfirm(value);
+    if (!tempValue) err.innerHTML = "Please confirm your password";
+    else if (value !== realTimePassword)
+      err.innerHTML = "Passwords do not match";
+    else setConfirm(value);
+  }
+
   function handleAgreeChange(e) {
     setAgree(e.target.checked);
   }
@@ -212,8 +242,7 @@ export default function SignUp() {
     setIsModalOpen(false);
   };
   // steps
-  const isStep1Valid =
-    firstName && lastName && (middleName || hasNoMiddle) && gender && birthday;
+  const isStep1Valid = firstName && lastName && gender && birthday;
   const isStep2Valid = contact && email && password && confirm && agree;
   const isFormValid = isStep1Valid && isStep2Valid;
   const nextStep = () => {
@@ -225,12 +254,12 @@ export default function SignUp() {
 
   return (
     <>
-      {/* Use min-h-svh to play nicely with mobile browser chrome */}
       <div className="grid min-h-svh grid-cols-1 md:grid-cols-2 bg-[#E6F5FF]">
-        {/* Left brand panel (hidden on mobile) */}
         <div className="relative hidden md:flex flex-col bg-[#0288D0]">
-          <NavLink to="/login" className="absolute left-0 top-0">
-            <p className="text-white text-lg md:text-2xl p-3">← Return</p>
+          <NavLink to="/" className="absolute left-0 top-0">
+            <p className="text-white text-md md:text-xl p-3">
+              ← Back to Homepage
+            </p>
           </NavLink>
 
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
@@ -307,7 +336,7 @@ export default function SignUp() {
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="w-full sm:w-1/2">
                       <label className="block font-semibold text-sm mb-1">
-                        First Name
+                        First Name<span className="text-red-600">*</span>
                       </label>
                       <input
                         type="text"
@@ -317,12 +346,12 @@ export default function SignUp() {
                       />
                       <p
                         id="errFirstName"
-                        className="text-red-500 text-[10px] h-4"
+                        className="text-red-500 text-[12px] h-4"
                       />
                     </div>
                     <div className="w-full sm:w-1/2">
                       <label className="block font-semibold text-sm mb-1">
-                        Last Name
+                        Last Name<span className="text-red-600">*</span>
                       </label>
                       <input
                         type="text"
@@ -332,7 +361,7 @@ export default function SignUp() {
                       />
                       <p
                         id="errLastName"
-                        className="text-red-500 text-[10px] h-4"
+                        className="text-red-500 text-[12px] h-4"
                       />
                     </div>
                   </div>
@@ -345,26 +374,16 @@ export default function SignUp() {
                       type="text"
                       name="middleName"
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-[#0A8CD2] focus:border-[#0A8CD2]"
+                      placeholder="(Optional)"
                       onChange={validateMiddleName}
-                      disabled={hasNoMiddle}
-                      value={hasNoMiddle ? "N/A" : middleName}
+                      value={middleName}
                     />
-                    <p
-                      id="errMiddleName"
-                      className="text-red-500 text-[10px] h-4"
-                    />
-                    <label className="flex items-center gap-2 mt-2 text-sm">
-                      <input
-                        type="checkbox"
-                        className="accent-[#0A8CD2]"
-                        onChange={handleNoMiddleChange}
-                      />
-                      <span>I don't have a middle name</span>
-                    </label>
                   </div>
 
                   <div>
-                    <p className="font-semibold text-sm mb-1">Gender</p>
+                    <p className="font-semibold text-sm mb-1">
+                      Gender<span className="text-red-600">*</span>
+                    </p>
                     <div className="flex flex-wrap items-center gap-4 text-sm">
                       <label className="inline-flex items-center gap-2">
                         <input
@@ -392,37 +411,23 @@ export default function SignUp() {
                         <input
                           type="radio"
                           name="gender"
-                          value="others"
+                          value="Prefer not to say"
                           className="accent-[#0A8CD2]"
                           onChange={validateGender}
-                          checked={gender && gender.startsWith("others")}
+                          checked={gender === "Prefer not to say"}
                         />
-                        <span>Others:</span>
+                        <span>Prefer not to say</span>
                       </label>
-                      <input
-                        type="text"
-                        placeholder="Please specify"
-                        maxLength={50}
-                        className="border-b border-gray-300 px-2 py-1 outline-none focus:border-[#0A8CD2] text-[12px] w-40"
-                        value={othersValue}
-                        onChange={(e) => {
-                          const value = e.target.value.trim();
-                          if (value.length <= 50) {
-                            setOthersValue(value);
-                            setGender(value ? `others: ${value}` : "others");
-                          }
-                        }}
-                      />
                     </div>
                     <p
                       id="errGender"
-                      className="text-red-500 text-[10px] h-4"
+                      className="text-red-500 text-[12px] h-4"
                     />
                   </div>
 
                   <div>
                     <label className="block font-semibold text-sm mb-1">
-                      Date of Birth
+                      Date of Birth<span className="text-red-600">*</span>
                     </label>
                     <div className="relative">
                       <svg
@@ -449,22 +454,35 @@ export default function SignUp() {
                     </div>
                     <p
                       id="errBirthday"
-                      className="text-red-500 text-[10px] h-4"
+                      className="text-red-500 text-[12px] h-4"
                     />
                   </div>
+                  <div className="flex justify-between items-center ">
+                    <div className="flex items-center text-[12px] text-gray-500">
+                      <span>
+                        Already Have an Account?{" "}
+                        <NavLink
+                          to="/login"
+                          className="text-[#0288D0] hover:underline cursor-pointer"
+                        >
+                          &nbsp; Log in
+                        </NavLink>
+                      </span>
+                    </div>
 
-                  <div className="pt-2 sm:pt-4 flex">
-                    <button
-                      onClick={nextStep}
-                      disabled={!isStep1Valid}
-                      className={`w-full ml-auto sm:w-auto px-6 py-2 rounded-lg ${
-                        isStep1Valid
-                          ? "bg-[#0A4C6F] text-white hover:bg-[#083854] cursor-pointer"
-                          : "bg-[#9EC2D3] text-[#E6EDF1] cursor-not-allowed"
-                      }`}
-                    >
-                      Next
-                    </button>
+                    <div className="pt-2 sm:pt-4 flex">
+                      <button
+                        onClick={nextStep}
+                        disabled={!isStep1Valid}
+                        className={`w-full ml-auto sm:w-auto px-6 py-2 rounded-lg ${
+                          isStep1Valid
+                            ? "bg-[#0A4C6F] text-white hover:bg-[#083854] cursor-pointer"
+                            : "bg-[#9EC2D3] text-[#E6EDF1] cursor-not-allowed"
+                        }`}
+                      >
+                        Next
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
@@ -480,7 +498,7 @@ export default function SignUp() {
                   <div className="space-y-4">
                     <div>
                       <label className="block font-semibold text-sm mb-1">
-                        Contact Number
+                        Contact Number<span className="text-red-600">*</span>
                       </label>
                       <input
                         type="tel"
@@ -492,13 +510,13 @@ export default function SignUp() {
                       />
                       <p
                         id="errContact"
-                        className="text-red-500 text-[10px] h-4"
+                        className="text-red-500 text-[12px] h-4"
                       />
                     </div>
 
                     <div>
                       <label className="block font-semibold text-sm mb-1">
-                        Email Address
+                        Email Address<span className="text-red-600">*</span>
                       </label>
                       <input
                         type="email"
@@ -510,14 +528,20 @@ export default function SignUp() {
                       />
                       <p
                         id="errEmail"
-                        className="text-red-500 text-[10px] h-4"
+                        className="text-red-500 text-[12px] h-4"
                       />
                     </div>
 
                     <div>
                       <label className="block font-semibold text-sm mb-1">
-                        Password
+                        Password<span className="text-red-600">*</span> <br />
+                        <span className="font-light text-[11px] text-gray-600">
+                          (Password must be at least 8 characters and include
+                          uppercase, lowercase, a number, and a special
+                          character.)
+                        </span>
                       </label>
+
                       <div className="relative">
                         <input
                           type="password"
@@ -528,18 +552,19 @@ export default function SignUp() {
                         />
                         <p
                           id="errPassword"
-                          className="text-red-500 text-[10px] h-4"
+                          className="text-red-500 text-[12px] h-4"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block font-semibold text-sm mb-1">
-                        Confirm Password
+                      <label className="block font-semibold text-sm mb-1 ">
+                        Confirm Password<span className="text-red-600">*</span>
                       </label>
                       <div className="relative">
                         <input
                           type="password"
+                          name="confirmpassword"
                           className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-[#0A8CD2] focus:border-[#0A8CD2]"
                           onChange={validateConfirm}
                           autoComplete="new-password"
@@ -547,7 +572,7 @@ export default function SignUp() {
                         />
                         <p
                           id="errConfirm"
-                          className="text-red-500 text-[10px] h-4"
+                          className="text-red-500 text-[12px] h-4"
                         />
                       </div>
                     </div>
@@ -567,10 +592,21 @@ export default function SignUp() {
                       </span>
                     </label>
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                      <div className="flex items-center  text-[12px] text-gray-500">
+                        <span>Already Have an Account?</span>
+                        <NavLink
+                          to="/login"
+                          className="text-[#0288D0] hover:underline cursor-pointer"
+                        >
+                          Log in
+                        </NavLink>
+                      </div>
+
                       <div className="flex w-full sm:w-auto gap-3">
                         <button
                           onClick={prevStep}
                           className="w-32 px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 cursor-pointer text-center"
+                          disabled={isLoading}
                         >
                           Back
                         </button>
@@ -612,16 +648,6 @@ export default function SignUp() {
                             Sign Up
                           </button>
                         )}
-                      </div>
-
-                      <div className="flex items-center  text-[12px] text-gray-500">
-                        <span>Already Have an Account?</span>
-                        <NavLink
-                          to="/login"
-                          className="text-[#0288D0] hover:underline cursor-pointer"
-                        >
-                          Log in
-                        </NavLink>
                       </div>
                     </div>
                   </div>

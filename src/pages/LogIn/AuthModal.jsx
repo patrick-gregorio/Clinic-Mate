@@ -17,7 +17,7 @@ function AuthModal({ isOpen, onClose, errorMessage }) {
             <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center mr-3">
               <span className="text-white text-sm font-bold">!</span>
             </div>
-            <h3 className="text-lg font-semibold text-gray-800">Login Error</h3>
+            <h3 className="text-lg font-semibold text-gray-800">Error</h3>
           </div>
 
           <p className="text-gray-600 mb-6">{errorMessage}</p>

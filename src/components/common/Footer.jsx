@@ -7,7 +7,7 @@ function Footer() {
           <div className="space-y-6">
             <div className="flex flex-row items-center gap-2">
               <img src={logo} className="w-10 h-10"></img>
-              <p className="text-[18px] ">ClinicMate</p>
+              <p className="text-[22px] ">ClinicMate</p>
             </div>
 
             <div className="flex items-center gap-5">
@@ -89,7 +89,7 @@ function Footer() {
               </a>
             </div>
 
-            <p className="text-3xl md:text-4xl font-semibold tracking-tight">
+            <p className="text-2xl md:text-3xl font-semibold tracking-tight">
               Open 24 hours!
             </p>
           </div>
